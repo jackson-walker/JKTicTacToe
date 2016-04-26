@@ -12,7 +12,8 @@ def randomColor():
     return stringColorOut
 
 def testMessage(clientSocket):
-    clientSocket.send('00x')
+    di = b'00x'
+    clientSocket.send(di)
 
 def sendMessage(self, clientSocket, playerFaction):
     print(playerFaction)
@@ -20,7 +21,7 @@ def sendMessage(self, clientSocket, playerFaction):
     debug = debug.replace(',', '')
     debug = str(debug)+playerFaction
     print(debug)
-    clientSocket.send(debug)
+    clientSocket.send(b'debug')
 
     return 0
 
@@ -93,7 +94,6 @@ playerFaction = str(playerFaction).replace('b', '')
 w, h = 3, 3
 gameBoard = [["-" for x in range(w)] for y in range(h)]
 
-#initializeButtons(topFrame, middleFrame, bottomFrame)
 ####INITIALIZE BUTTS####
 button00 = Button(bottomFrame, text ="0,0",fg = randomColor(), command= lambda: sendMessage(button00, clientSocket, playerFaction))
 button10 = Button(bottomFrame, text="1,0", fg=randomColor(), command= lambda: sendMessage(button10, clientSocket, playerFaction))
@@ -117,18 +117,18 @@ button22.pack(side = LEFT)
 buttonTest.pack(side = BOTTOM)
 buttonList = [button00, button01, button02, button10, button11, button12, button20, button21, button22]
 
-#create tic tac toe board
-w, h = 3, 3
-gameBoard = [["-" for x in range(w)] for y in range(h)]
-##BOARD INITALIZED##
+root.mainloop()
 
+##BOARD INITALIZED##
+print("pooploop fam")
 while 1:    #game logic loop
     for button in buttonList:
+        print("forbegin")
         chars = list(button.config('text')[-1])
         x = int(chars[0])
         y = int(chars[2])
-        if gameBoard[x][y] == "-":
-            button.state(["!disabled"])
+        # if gameBoard[x][y] == "-":
+        #     button['state'] = 'normal'
     #endfor
 
     #inmessage confirmation from server: victory int, x move coord, y move coord, playerFaction
@@ -155,7 +155,7 @@ while 1:    #game logic loop
 
     #disable all buttons while waiting for other player
     for button in buttonList:
-        button.state(["disabled"])
+        button['state'] = 'disabled'
 
     victoryCheck(playerFaction, iVictoryInt) #call victory check, should print correct windows
 
