@@ -173,9 +173,9 @@ def BoardUpdating(inMessage, GameBoard):
                     VicInt == 1
                 else:
                     VicInt == 2
-    if '-' not in GameBoard:
+    if '-' not in GameBoard and VicInt == 0:
         VicInt = 3
-    print GameBoard
+    print (GameBoard)
     return (VicInt + inMessage, GameBoard)
 
 
@@ -183,41 +183,46 @@ def BoardUpdating(inMessage, GameBoard):
 #2D arrays with help from http://stackoverflow.com/questions/6667201/how-to-define-two-dimensional-array-in-python
 w, h = 3, 3
 GameBoard = [["-" for x in range(w)] for y in range(h)]
-Player1Char = 'x'
-Player2Char = 'y'
+Player1Char = "x"
+Player2Char = "y"
 serverPort = 9050
 serverSocket = socket(AF_INET, SOCK_STREAM)
 serverSocket.bind(('', serverPort))
 serverSocket.listen(5)
 
 while True:
-    print 'Waiting for players'
+    print ('Waiting for players')
     VicInt = 0;
     Player1Socket, addr1 = serverSocket.accept()
-    PlayerRandInt = random.randint(0,10)
+    PlayerRandInt = randint(0,10)
     if (PlayerRandInt % 2) == 0:
-        Player1Char = 'y'
-        Player2Char = 'x'
-    print 'Player 1 connected as {0}'.format(Player1Char)
+        Player1Char = "y"
+        Player2Char = "x"
+    print ('Player 1 connected as {0}'.format(Player1Char))
+    Player1Socket.send(str(Player1Char))
     Player2Socket, addr2 = serverSocket.accept()
-    print 'Player 2 connected as {0}'.format(Player2Char)
+    print ('Player 2 connected as {0}'.format(Player2Char))
+    Player2Socket.send(str(Player2Char)
 
+                       )
+    #Say game starts
     while VicInt == 0:
 
         inMessage = Player1Socket.recv(1024)
-        print 'Player 1 move {0}'.format(inMessage)
-        outMessage, GameBoard = BoardUpdating(inMessage)
+        print ('Player 1 move {0}'.format(inMessage))
+        outMessage, GameBoard = BoardUpdating(inMessage, GameBoard)
         VicInt = list(outMessage)[0]
         Player1Socket.send(outMessage)
         Player2Socket.send(outMessage)
         if VicInt != 0:
             break;
         inMessage = Player2Socket.recv(1024)
-        print 'Player 2 move {0}'.format(inMessage)
-        outMessage, GameBoard = BoardUpdating(inMessage)
+        print ('Player 2 move {0}'.format(inMessage))
+        outMessage, GameBoard = BoardUpdating(inMessage, GameBoard)
         Player2Socket.send(outMessage)
         Player1Socket.send(outMessage)
         VicInt = list(outMessage)[0]
+
 
     #GBString = str(GameBoard)
     #GBString = GBString.translate(None, '[],\'')
