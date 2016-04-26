@@ -12,8 +12,9 @@ def randomColor():
     return stringColorOut
 
 def testMessage(clientSocket):
-    di = b'00x'
-    clientSocket.send(di)
+    di = '00x'
+    clientSocket.send(bytes(di, encoding='utf-8'))
+    return 0
 
 def sendMessage(self, clientSocket, playerFaction):
     print(playerFaction)
@@ -21,8 +22,8 @@ def sendMessage(self, clientSocket, playerFaction):
     debug = debug.replace(',', '')
     debug = str(debug)+playerFaction
     print(debug)
-    clientSocket.send(b'debug')
-
+    debug = bytes(debug, encoding='utf-8')
+    clientSocket.send(debug)
     return 0
 
 def victoryCheck(playerFaction, iVictoryInt):
@@ -127,8 +128,8 @@ while 1:    #game logic loop
         chars = list(button.config('text')[-1])
         x = int(chars[0])
         y = int(chars[2])
-        # if gameBoard[x][y] == "-":
-        #     button['state'] = 'normal'
+        if gameBoard[x][y] == "-":
+            button['state'] = 'normal'
     #endfor
 
     #inmessage confirmation from server: victory int, x move coord, y move coord, playerFaction
@@ -159,6 +160,8 @@ while 1:    #game logic loop
 
     victoryCheck(playerFaction, iVictoryInt) #call victory check, should print correct windows
 
+
+
     #update from server on opponent move
     inMsgOppo = clientSocket.recv(1024)
 
@@ -183,8 +186,6 @@ while 1:    #game logic loop
             button["text"] = str(playerFactionConfirm)
 
     victoryCheck(playerFaction, iVictoryInt)
-
-
     break
     #allow game to be played
     #send update
